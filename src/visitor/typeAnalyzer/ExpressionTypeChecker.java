@@ -22,7 +22,16 @@ import visitor.Visitor;
 import java.util.ArrayList;
 
 public class ExpressionTypeChecker extends Visitor<Type> {
+
+    private boolean isInFunctionCallStmt;
+    private boolean seenNoneLvalue = false;
+
+    public void setIsInFunctionCallStmt(boolean _isInFunctionCallStmt) {
+        this.isInFunctionCallStmt = _isInFunctionCallStmt;
+    }
+
     public ArrayList<CompileError> typeErrors;
+
     public ExpressionTypeChecker(ArrayList<CompileError> typeErrors){
         this.typeErrors = typeErrors;
     }
@@ -30,13 +39,32 @@ public class ExpressionTypeChecker extends Visitor<Type> {
     public boolean sameType(Type el1, Type el2){
         //TODO check the two type are same or not
 
+        if(el1 instanceof NoType || el2 instanceof NoType)
+            return true;
+        
+        if(el1 instanceof BooleanType && el2 instanceof BooleanType)
+            return true;
+        
+        if(el1 instanceof IntType && el2 instanceof IntType)
+            return true;
+
+        if(el1 instanceof FloatType && el2 instanceof FloatType)
+            return true;
+
         return false;
     }
 
     public boolean isLvalue(Expression expr){
         //TODO check the expr are lvalue or not
-
-        return false;
+        boolean previousSeenNoneLvalue = this.seenNoneLvalue;
+        boolean previousIsCatchErrorsActive = Node.isCatchErrorsActive;
+        this.seenNoneLvalue = false;
+        Node.isCatchErrorsActive = false;
+        expression.accept(this);
+        boolean isLvalue = !this.seenNoneLvalue;
+        Node.isCatchErrorsActive = previousIsCatchErrorsActive;
+        this.seenNoneLvalue = previousSeenNoneLvalue;
+        return isLvalue;
     }
 
 
@@ -48,9 +76,29 @@ public class ExpressionTypeChecker extends Visitor<Type> {
         UnaryOperator operator = unaryExpression.getUnaryOperator();
 
         //TODO check errors and return the type
+        
+        if(operator.equals(UnaryOperator.not)){
+            if (expType instanceof BooleanType)
+                return new BooleanType();
+
+            if( !(expType instanceof NoType)){
+                UnsupportedOperandType exception = new UnsupportedOperandType(expType.getLine(), operator.name());
+                expType.addError(exception);
+            }
+        } else {
+            if (expType instanceof IntType)
+                return new IntType();
+
+            if(!(expType instanceof NoType)) {
+                UnsupportedOperandType exception = new UnsupportedOperandType(expType.getLine(), operator.name())
+                expType.addError(exception);
+            }
+        }
+
         if(expType instanceof IntType) {
             return new IntType();
         }
+
         else {
             typeErrors.add(new UnsupportedOperandType(unaryExpression.getLine(), operator.name()));
             return new NoType();
