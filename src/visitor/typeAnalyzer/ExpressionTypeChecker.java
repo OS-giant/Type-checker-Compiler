@@ -38,7 +38,6 @@ public class ExpressionTypeChecker extends Visitor<Type> {
 
     public boolean sameType(Type el1, Type el2){
         //TODO check the two type are same or not
-
         if(el1 instanceof NoType || el2 instanceof NoType)
             return true;
         
@@ -76,31 +75,55 @@ public class ExpressionTypeChecker extends Visitor<Type> {
         UnaryOperator operator = unaryExpression.getUnaryOperator();
 
         //TODO check errors and return the type
-        
-        if(operator.equals(UnaryOperator.not)){
+        if(operator.equals(UnaryOperator.minus)){
+            if(expType instanceof IntType)
+                return expType;
+            
+            if(expType instanceof NoType)
+                return new NoType();
+            else {
+                UnsupportedOperandType exception = new UnsupportedOperandType(uExpr.getLine(), operator.name());
+                typeErrors.add(exception);
+                return new NoType();
+            }
+
+        } else if(operator.equals(UnaryOperator.plus)){
+            if(expType instanceof IntType)
+                return expType;
+            
+            if(expType instanceof NoType)
+                return new NoType();
+            else {
+                UnsupportedOperandType exception = new UnsupportedOperandType(uExpr.getLine(), operator.name());
+                typeErrors.add(exception);
+                return new NoType();
+            }
+        }
+
+         else if(operator.equals(UnaryOperator.not)){
             if (expType instanceof BooleanType)
-                return new BooleanType();
+                return expType;
 
             if( !(expType instanceof NoType)){
-                UnsupportedOperandType exception = new UnsupportedOperandType(expType.getLine(), operator.name());
-                expType.addError(exception);
+                return new NoType();
+            } else {
+                UnsupportedOperandType exception = new UnsupportedOperandType(uExpr.getLine(), operator.name());
+                typeErrors.add(exception);
             }
+
         } else {
-            if (expType instanceof IntType)
-                return new IntType();
+            boolean isOperandLValue = this.isLvalue(unaryExpression.getOperand());
+            if (expType instanceof NoType)
+                return new NoType();
 
-            if(!(expType instanceof NoType)) {
-                UnsupportedOperandType exception = new UnsupportedOperandType(expType.getLine(), operator.name())
-                expType.addError(exception);
+            if(expType instanceof IntType) {
+                if(isOperandLValue) return expType;
+            
+            return new NoType();
             }
-        }
 
-        if(expType instanceof IntType) {
-            return new IntType();
-        }
-
-        else {
-            typeErrors.add(new UnsupportedOperandType(unaryExpression.getLine(), operator.name()));
+            UnsupportedOperandType exception = new UnsupportedOperandType(uExpr.getLine(), operator.name());
+            typeErrors.add(exception);
             return new NoType();
         }
     }
@@ -114,23 +137,59 @@ public class ExpressionTypeChecker extends Visitor<Type> {
     }
 
     @Override
-    public Type visit(Identifier identifier) {}
+    public Type visit(Identifier identifier) {
+        try{
+            FunctionItem funcSym = (FunctionItem) SymbolTable.root.getItem(FunctionItem.STARTKEY + 
+            identifier.getName());
+            ArrayList<Type> args = funcSym.getArgs();
+            if(args.size() == 1)
+                if(args.get(0) instanceof void)
+                    args = new ArrayList<>();
+            return funcSym.getType();
+
+        } catch (ItemNotFoundException exception2) {
+            try {
+                SymbolTable.top.getItem(VariableItem.STARTKEY + identifier.getName());
+                VariableItem varSym = (VariableItem) SymbolTable.top.getItem(VariableItem.STARTKEY + 
+                identifier.getName());
+                return varSym.getType();
+            } catch (ItemNotFoundException exception3) {
+                VarNotDeclared exception = new VarNotDeclared(identifier.getLine(), identifier.getName());
+                typeErrors.add(exception);
+                return new NoType();
+            }
+        }
+    }
 
     @Override
-    public Type visit(FunctionCall functionCall) {}
+    public Type visit(FunctionCall functionCall) {
+        this.seenNoneLvalue = true;
+        Type returnType = functionCall.getUFuncName().accept(this);
+
+        if(!(returnType instanceof NoType)) {
+            FunctionNotDeclared funNotDec = 
+            new FunctionNotDeclared(functionCall.getLine(), functionCall.getName());
+            typeErrors.add(funNotDec)
+        } else {
+            
+        }
+    }
 
     @Override
     public Type visit(IntValue value) {
+        this.seenNoneLvalue = true;
         return new IntType();
     }
 
     @Override
     public Type visit(FloatType value) {
+        this.seenNoneLvalue = true;
         return new FloatType();
     }
 
     @Override
     public Type visit(BooleanType value) {
+        this.seenNoneLvalue = true;
         return new BooleanType();
     }
 }
