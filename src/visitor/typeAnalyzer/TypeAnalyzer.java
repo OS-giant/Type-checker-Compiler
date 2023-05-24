@@ -1,4 +1,5 @@
 package visitor.typeAnalyzer;
+
 import java.util.*;
 
 import ast.node.Program;
@@ -43,7 +44,7 @@ public class TypeAnalyzer extends Visitor<Void> {
 
     @Override
     public Void visit(Program program) {
-        for(var functionDec : program.getFuncs()) {
+        for (var functionDec : program.getFuncs()) {
             functionDec.accept(this);
         }
         program.getMain().accept(this);
@@ -58,22 +59,24 @@ public class TypeAnalyzer extends Visitor<Void> {
         Type type = funcDeclaration.getType();
 
         try {
-            functionItem = (FunctionItem)  SymbolTable.root.get(FunctionItem.STARTKEY + funcDeclaration.getName().getName());
+            functionItem = (FunctionItem) SymbolTable.root
+                    .get(FunctionItem.STARTKEY + funcDeclaration.getName().getName());
             SymbolTable.push((functionItem.getFunctionSymbolTable()));
 
         } catch (ItemNotFoundException e) {
-            //unreachable
+            // unreachable
         }
         SymbolTable new_symbol = new SymbolTable();
         SymbolTable.push(new_symbol);
         curFunction = funcDeclaration;
-        for(var arg:funcDeclaration.getArgs()){
+        for (var arg : funcDeclaration.getArgs()) {
             arg.accept(this);
         }
         funcDeclaration.getIdentifier().accept(this);
-        funcDeclaration.getName().accept(this);;
+        funcDeclaration.getName().accept(this);
+        ;
 
-        for(var stmt : funcDeclaration.getStatements()) {
+        for (var stmt : funcDeclaration.getStatements()) {
             stmt.accept(this);
         }
 
@@ -90,14 +93,12 @@ public class TypeAnalyzer extends Visitor<Void> {
                 new Identifier("main"),
                 new NoType(),
                 new ArrayList<>(),
-                mainDeclaration.getMainStatements()
-        );
+                mainDeclaration.getMainStatements());
         FunctionItem functionItem = new FunctionItem(functionDeclaration);
 
         try {
             SymbolTable.root.put(functionItem);
-        }
-        catch (ItemAlreadyExistsException e){
+        } catch (ItemAlreadyExistsException e) {
         }
 
         var mainItem = new MainItem(mainDeclaration);
@@ -114,23 +115,24 @@ public class TypeAnalyzer extends Visitor<Void> {
         functionItem.setFunctionDeclaration(functionDeclaration);
         return null;
     }
+
     @Override
     public Void visit(ForloopStmt forloopStmt) {
         boolean hasReturnCur;
         hasReturnCur = hasReturn;
         Type condtype = forloopStmt.getIterator().getType();
-        if(!(condtype instanceof BooleanType || condtype instanceof NoType))
-        {
+        if (!(condtype instanceof BooleanType || condtype instanceof NoType)) {
             ConditionTypeNotBool exception = new ConditionTypeNotBool(forloopStmt.getLine());
-            forloopStmt.addError(exception);
+            typeErrors.add(exception);
         }
         try {
-            ForLoopItem forLoopItem = (ForLoopItem)  SymbolTable.root.get(FunctionItem.STARTKEY + forloopStmt.toString());
+            ForLoopItem forLoopItem = (ForLoopItem) SymbolTable.root
+                    .get(FunctionItem.STARTKEY + forloopStmt.toString());
             SymbolTable.push((forLoopItem.getForLoopSymbolTable()));
         } catch (ItemNotFoundException e) {
 
         }
-        for (var stmt:forloopStmt.getStatements())
+        for (var stmt : forloopStmt.getStatements())
             stmt.accept(this);
         SymbolTable.pop();
 
@@ -143,16 +145,14 @@ public class TypeAnalyzer extends Visitor<Void> {
         Type tr = assignStmt.getRValue().accept(expressionTypeChecker);
         Expression lexpr = assignStmt.getLValue();
         Expression rexpr = assignStmt.getRValue();
-        if(!expressionTypeChecker.isLvalue(lexpr))
-        {
+        if (!expressionTypeChecker.isLvalue(lexpr)) {
             LeftSideNotLValue exception = new LeftSideNotLValue(assignStmt.getLine());
-            assignStmt.addError(exception);
+            typeErrors.add(exception);
         }
-        if(!expressionTypeChecker.sameType(tl,tr))
-        {
+        if (!expressionTypeChecker.sameType(tl, tr)) {
             UnsupportedOperandType exception = new UnsupportedOperandType(
-                                                assignStmt.getLine(),BinaryOperator.gt.name());
-            assignStmt.addError(exception);
+                    assignStmt.getLine(), BinaryOperator.gt.name());
+            typeErrors.add(exception);
         }
 
         return null;
@@ -162,9 +162,8 @@ public class TypeAnalyzer extends Visitor<Void> {
     public Void visit(FunctionCall functionCall) {
         expressionTypeChecker.setIsInFunctionCallStmt(true);
         try {
-                SymbolTable.root.get(FunctionItem.STARTKEY + functionCall.getUFuncName().getName());
-        }
-        catch (ItemNotFoundException e) {
+            SymbolTable.root.get(FunctionItem.STARTKEY + functionCall.getUFuncName().getName());
+        } catch (ItemNotFoundException e) {
 
         }
 
