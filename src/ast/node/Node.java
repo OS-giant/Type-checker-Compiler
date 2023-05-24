@@ -7,6 +7,7 @@ import java.util.ArrayList;
 
 public abstract class Node {
 
+    private ArrayList<CompileError> errors;
     private int line;
     public static boolean isCatchErrorsActive = true;
 
