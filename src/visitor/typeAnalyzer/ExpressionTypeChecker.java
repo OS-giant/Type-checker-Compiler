@@ -1,3 +1,4 @@
+
 package visitor.typeAnalyzer;
 
 import ast.node.expression.*;
@@ -19,6 +20,7 @@ import symbolTable.symbolTableItems.FunctionItem;
 import symbolTable.symbolTableItems.VariableItem;
 import visitor.Visitor;
 import ast.node.Node;
+
 import java.util.ArrayList;
 
 public class ExpressionTypeChecker extends Visitor<Type> {
@@ -126,6 +128,7 @@ public class ExpressionTypeChecker extends Visitor<Type> {
             typeErrors.add(exception);
             return new NoType();
         }
+
         return new NoType();
     }
 
@@ -134,24 +137,25 @@ public class ExpressionTypeChecker extends Visitor<Type> {
         Type tl = binaryExpression.getLeft().accept(this);
         Type tr = binaryExpression.getRight().accept(this);
         BinaryOperator operator = binaryExpression.getBinaryOperator();
+
         return new NoType();
     }
 
     @Override
     public Type visit(Identifier identifier) {
         try {
-            FunctionItem funcSym = (FunctionItem) SymbolTable.root.getItem(FunctionItem.STARTKEY +
+            FunctionItem funcSym = (FunctionItem) SymbolTable.root.get(FunctionItem.STARTKEY +
                     identifier.getName());
-            ArrayList<Type> args = funcSym.getArgs();
+            ArrayList<Type> args = funcSym.argTypes;
             if (args.size() == 1)
-                if (args.get(0) instanceof void)
+                if (args.get(0) instanceof NoType)
                     args = new ArrayList<>();
-            return funcSym.getType();
+            return new NoType();
 
         } catch (ItemNotFoundException exception2) {
             try {
-                SymbolTable.top.getItem(VariableItem.STARTKEY + identifier.getName());
-                VariableItem varSym = (VariableItem) SymbolTable.top.getItem(VariableItem.STARTKEY +
+                SymbolTable.top.get(VariableItem.STARTKEY + identifier.getName());
+                VariableItem varSym = (VariableItem) SymbolTable.top.get(VariableItem.STARTKEY +
                         identifier.getName());
                 return varSym.getType();
             } catch (ItemNotFoundException exception3) {
@@ -168,11 +172,11 @@ public class ExpressionTypeChecker extends Visitor<Type> {
         Type returnType = functionCall.getUFuncName().accept(this);
 
         if (!(returnType instanceof NoType)) {
-            FunctionNotDeclared funNotDec = new FunctionNotDeclared(functionCall.getLine(), functionCall.getName());
+            FunctionNotDeclared funNotDec = new FunctionNotDeclared(functionCall.getLine(),
+                    functionCall.getUFuncName().getName());
             typeErrors.add(funNotDec);
-        } else {
-
         }
+
         return new NoType();
     }
 
