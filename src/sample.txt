@@ -1,0 +1,14 @@
+#salam
+function b(int avsvd_caica,int b,int c,boolean ui =false):int {
+    float g = 2.0+3.4;
+    float f = -12.13;
+    float c = 10.32;
+    vv = 2+3+5+4+x[2];
+    dd= true;
+    
+    zz = 1000;
+    boolean b = false;
+    int a;
+    int bc = 100;
+}
+#bye s,'v;svs'vsvs'

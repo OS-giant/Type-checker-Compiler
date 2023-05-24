@@ -20,10 +20,11 @@ public abstract class Node {
     }
 
     public abstract String toString();
+
     public abstract <T> T accept(IVisitor<T> visitor);
 
     public void addError(CompileError e) {
-        if(Node.isCatchErrorsActive) {
+        if (Node.isCatchErrorsActive) {
             this.errors.add(e);
         }
     }

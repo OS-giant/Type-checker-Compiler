@@ -19,43 +19,36 @@ public class FunctionItem extends SymbolTableItem {
         this.argTypes = argTypes;
     }
 
-    public FunctionItem(FuncDeclaration functionDeclaration)
-    {
+    public FunctionItem(FuncDeclaration functionDeclaration) {
         this.name = functionDeclaration.getName().getName();
         this.argTypes = new ArrayList<>();
-        for(ArgDeclaration arg: functionDeclaration.getArgs())
+        for (ArgDeclaration arg : functionDeclaration.getArgs())
             argTypes.add(arg.getType());
         this.functionDeclaration = functionDeclaration;
     }
 
-    public void setFunctionSymbolTable(SymbolTable symbolTable)
-    {
+    public void setFunctionSymbolTable(SymbolTable symbolTable) {
         this.functionSymbolTable = symbolTable;
     }
 
-    public SymbolTable getFunctionSymbolTable()
-    {
+    public SymbolTable getFunctionSymbolTable() {
         return this.functionSymbolTable;
     }
 
-    public void setFunctionDeclaration(FuncDeclaration functionDeclarationDeclaration)
-    {
+    public void setFunctionDeclaration(FuncDeclaration functionDeclarationDeclaration) {
         this.functionDeclaration = functionDeclaration;
     }
 
-    public String getName()
-    {
+    public String getName() {
         return name;
     }
 
-    public void setName( String name )
-    {
+    public void setName(String name) {
         this.name = name;
-        functionDeclaration.getName().setName( name );
+        functionDeclaration.getName().setName(name);
     }
 
-    public FuncDeclaration getHandlerDeclaration()
-    {
+    public FuncDeclaration getHandlerDeclaration() {
         return functionDeclaration;
     }
 
