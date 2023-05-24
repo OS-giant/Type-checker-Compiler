@@ -1,4 +1,4 @@
-// Generated from /home/yektanet/Edu/TA/PLC/CA3V2/src/main/grammar/LogicPL.g4 by ANTLR 4.12.0
+// Generated from java-escape by ANTLR 4.11.1
 package main.grammar;
 
 import ast.node.*;
@@ -21,7 +21,7 @@ import java.util.ArrayList;
 
 @SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast", "CheckReturnValue"})
 public class LogicPLParser extends Parser {
-	static { RuntimeMetaData.checkVersion("4.12.0", RuntimeMetaData.VERSION); }
+	static { RuntimeMetaData.checkVersion("4.11.1", RuntimeMetaData.VERSION); }
 
 	protected static final DFA[] _decisionToDFA;
 	protected static final PredictionContextCache _sharedContextCache =
@@ -114,7 +114,7 @@ public class LogicPLParser extends Parser {
 	}
 
 	@Override
-	public String getGrammarFileName() { return "LogicPL.g4"; }
+	public String getGrammarFileName() { return "java-escape"; }
 
 	@Override
 	public String[] getRuleNames() { return ruleNames; }
@@ -275,7 +275,7 @@ public class LogicPLParser extends Parser {
 			setState(109);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & 28L) != 0)) {
+			if (((_la) & ~0x3f) == 0 && ((1L << _la) & 28L) != 0) {
 				{
 				setState(98);
 				((FunctionDecContext)_localctx).arg1 = functionVarDec();
@@ -323,7 +323,7 @@ public class LogicPLParser extends Parser {
 				setState(120); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
-			} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & 1649267444188L) != 0) );
+			} while ( ((_la) & ~0x3f) == 0 && ((1L << _la) & 1649267444188L) != 0 );
 			}
 			setState(122);
 			match(RBRACE);
@@ -454,7 +454,7 @@ public class LogicPLParser extends Parser {
 				setState(137); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
-			} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & 1649267444188L) != 0) );
+			} while ( ((_la) & ~0x3f) == 0 && ((1L << _la) & 1649267444188L) != 0 );
 			setState(139);
 			match(RBRACE);
 			((MainBlockContext)_localctx).main =  new MainDeclaration(mainStmts); _localctx.main.setLine(((MainBlockContext)_localctx).m.getLine());
@@ -1632,7 +1632,7 @@ public class LogicPLParser extends Parser {
 			setState(311);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & 1649267444188L) != 0)) {
+			while (((_la) & ~0x3f) == 0 && ((1L << _la) & 1649267444188L) != 0) {
 				{
 				{
 				setState(306);
@@ -1797,7 +1797,7 @@ public class LogicPLParser extends Parser {
 				setState(334); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
-			} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & 1649267444188L) != 0) );
+			} while ( ((_la) & ~0x3f) == 0 && ((1L << _la) & 1649267444188L) != 0 );
 			}
 			setState(336);
 			match(RPAR);
@@ -2995,7 +2995,7 @@ public class LogicPLParser extends Parser {
 			setState(492);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & 7218766810624L) != 0)) {
+			if (((_la) & ~0x3f) == 0 && ((1L << _la) & 7218766810624L) != 0) {
 				{
 				setState(481);
 				((FunctionCallContext)_localctx).arg1 = expression();

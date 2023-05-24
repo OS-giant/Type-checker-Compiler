@@ -59,7 +59,7 @@ public class ExpressionTypeChecker extends Visitor<Type> {
         boolean previousIsCatchErrorsActive = Node.isCatchErrorsActive;
         this.seenNoneLvalue = false;
         Node.isCatchErrorsActive = false;
-        expression.accept(this);
+        expr.accept(this);
         boolean isLvalue = !this.seenNoneLvalue;
         Node.isCatchErrorsActive = previousIsCatchErrorsActive;
         this.seenNoneLvalue = previousSeenNoneLvalue;
@@ -169,7 +169,7 @@ public class ExpressionTypeChecker extends Visitor<Type> {
         if(!(returnType instanceof NoType)) {
             FunctionNotDeclared funNotDec = 
             new FunctionNotDeclared(functionCall.getLine(), functionCall.getName());
-            typeErrors.add(funNotDec)
+            typeErrors.add(funNotDec);
         } else {
             
         }

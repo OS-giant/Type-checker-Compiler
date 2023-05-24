@@ -1,7 +1,9 @@
 package ast.node;
 
+import compileError.CompileError;
 import visitor.IVisitor;
 import visitor.Visitor;
+import java.util.ArrayList;
 
 public abstract class Node {
 
