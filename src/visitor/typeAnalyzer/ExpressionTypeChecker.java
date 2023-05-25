@@ -169,7 +169,11 @@ public class ExpressionTypeChecker extends Visitor<Type> {
     @Override
     public Type visit(FunctionCall functionCall) {
         this.seenNoneLvalue = true;
+        Integer count = typeErrors.size();
         Type returnType = functionCall.getUFuncName().accept(this);
+        if (typeErrors.size() - count == 1)// if identifier belong to
+            // funcall remove last type_errors
+            typeErrors.remove(typeErrors.size() - 1);
 
         if ((returnType instanceof NoType)) {
             FunctionNotDeclared funNotDec = new FunctionNotDeclared(functionCall.getLine(),
