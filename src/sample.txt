@@ -1,5 +1,5 @@
 main{
     int num = 50;
-    
-    int c=a;
+
+    int a = f(20);
 }

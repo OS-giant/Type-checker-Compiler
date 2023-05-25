@@ -177,7 +177,7 @@ public class ExpressionTypeChecker extends Visitor<Type> {
             typeErrors.add(funNotDec);
         }
 
-        return new NoType();
+        return returnType;
     }
 
     @Override
