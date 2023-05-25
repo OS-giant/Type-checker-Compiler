@@ -1,4 +1,5 @@
 main{
     int num = 50;
-    int c = a;
+    
+    int c=a;
 }

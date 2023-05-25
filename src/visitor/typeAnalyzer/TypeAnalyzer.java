@@ -159,6 +159,25 @@ public class TypeAnalyzer extends Visitor<Void> {
     }
 
     @Override
+    public Void visit(VarDecStmt varDecStmt) {
+        Type tl = varDecStmt.getIdentifier().accept(expressionTypeChecker);
+        Type tr = varDecStmt.getInitialExpression().accept(expressionTypeChecker);
+
+        Expression lexpr = varDecStmt.getIdentifier();
+        if (!expressionTypeChecker.isLvalue(lexpr)) {
+            LeftSideNotLValue exception = new LeftSideNotLValue(varDecStmt.getLine());
+            typeErrors.add(exception);
+        }
+        if (!expressionTypeChecker.sameType(tl, tr)) {
+            UnsupportedOperandType exception = new UnsupportedOperandType(
+                    varDecStmt.getLine(), BinaryOperator.gt.name());
+            typeErrors.add(exception);
+        }
+
+        return null;
+    }
+
+    @Override
     public Void visit(FunctionCall functionCall) {
         expressionTypeChecker.setIsInFunctionCallStmt(true);
         try {
