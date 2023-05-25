@@ -1,14 +1,32 @@
-#salam
-function b(int avsvd_caica,int b,int c,boolean ui =false):int {
-    float g = 2.0+3.4;
-    float f = -12.13;
-    float c = 10.32;
-    vv = 2+3+5+4+x[2];
-    dd= true;
-    
-    zz = 1000;
-    boolean b = false;
-    int a;
-    int bc = 100;
+#definition of func
+function isD(int a, int b): boolean{
+    (b==a) => (return false;)
+(b%a==a) => (return true;)
+(a%b!=a) => (return false;)
+
+
 }
-#bye s,'v;svs'vsvs'
+
+
+main{
+    int num = 50;
+    Evennum(num);
+    int[2] arr = [4,5];
+int num2 = 200;
+boolean devise = true;
+for(a: array){
+
+}
+
+
+(divi == true) => (DBy20(num2);)
+([?Divise(num)]) => (Evennum(num2); DiviseBy(num2);)
+
+
+print([?Evennum(num2)]); # print “true”
+print([DiviseBy10(?)]);      # print {num2, num1}
+
+
+
+
+}
