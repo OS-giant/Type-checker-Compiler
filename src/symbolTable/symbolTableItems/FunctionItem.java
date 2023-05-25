@@ -9,7 +9,7 @@ import java.util.ArrayList;
 
 public class FunctionItem extends SymbolTableItem {
 
-    protected ArrayList<Type> argTypes = new ArrayList<>();
+    public ArrayList<Type> argTypes = new ArrayList<>();
     protected SymbolTable functionSymbolTable;
     protected FuncDeclaration functionDeclaration;
     public static final String STARTKEY = "Function_";
