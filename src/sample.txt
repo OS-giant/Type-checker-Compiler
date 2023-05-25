@@ -1,32 +1,4 @@
-#definition of func
-function isD(int a, int b): boolean{
-    (b==a) => (return false;)
-(b%a==a) => (return true;)
-(a%b!=a) => (return false;)
-
-
-}
-
-
 main{
     int num = 50;
-    Evennum(num);
-    int[2] arr = [4,5];
-int num2 = 200;
-boolean devise = true;
-for(a: array){
-
-}
-
-
-(divi == true) => (DBy20(num2);)
-([?Divise(num)]) => (Evennum(num2); DiviseBy(num2);)
-
-
-print([?Evennum(num2)]); # print “true”
-print([DiviseBy10(?)]);      # print {num2, num1}
-
-
-
-
+    int c = a;
 }
