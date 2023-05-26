@@ -18,6 +18,7 @@ import ast.type.NoType;
 import ast.type.Type;
 import ast.type.primitiveType.BooleanType;
 import com.sun.jdi.VoidType;
+
 import compileError.CompileError;
 import compileError.Type.FunctionNotDeclared;
 import compileError.Type.LeftSideNotLValue;
@@ -84,6 +85,17 @@ public class TypeAnalyzer extends Visitor<Void> {
 
         functionItem.setFunctionSymbolTable(new_symbol);
 
+        return null;
+    }
+
+    @Override
+    public Void visit(ImplicationStmt implicationStmt) {
+        Type cond_Type = implicationStmt.getCondition().getType();
+        if (!(cond_Type instanceof BooleanType)) {
+            ConditionTypeNotBool exception = new ConditionTypeNotBool(implicationStmt.getLine());
+            typeErrors.add(exception);
+        }
+        implicationStmt.getCondition().accept(expressionTypeChecker);
         return null;
     }
 
