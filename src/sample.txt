@@ -1,5 +1,23 @@
-main{
-    int num = 50;
+# definition of functions
+function isDivisible(int a, int b): boolean {
+    (b == 0) => (return false;)
+    (a % b == 0) => (return true;)
+    (a % b != 0) => (return false;)
+}
 
-    int a = b + fib(20,100);
+main{
+    int num1 = 50;
+    EvenNumber(num1);
+    
+    ([?EvenNumber(num1)] && isDivisible(num1, 5)) => (DivisibleBy10(num1);)
+
+    int[2] int_array = [4, 5];
+    int num2 = 200;
+    boolean divisible = true;
+    for (a: int_array){
+        (!isDivisiblerf(num2, a)) => (divisible = false; return;)
+    }
+    (divisible == true) => (DivisibleBy20(num2);)
+
+
 }
