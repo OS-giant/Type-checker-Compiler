@@ -118,13 +118,9 @@ public class TypeAnalyzer extends Visitor<Void> {
 
     @Override
     public Void visit(ForloopStmt forloopStmt) {
-        boolean hasReturnCur;
-        hasReturnCur = hasReturn;
-        Type condtype = forloopStmt.getIterator().getType();
-        if (!(condtype instanceof BooleanType || condtype instanceof NoType)) {
-            ConditionTypeNotBool exception = new ConditionTypeNotBool(forloopStmt.getLine());
-            typeErrors.add(exception);
-        }
+        Identifier array_name = forloopStmt.getArrayName();
+        array_name.accept(expressionTypeChecker);
+
         try {
             ForLoopItem forLoopItem = (ForLoopItem) SymbolTable.root
                     .get(FunctionItem.STARTKEY + forloopStmt.toString());
