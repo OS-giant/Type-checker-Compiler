@@ -4,6 +4,8 @@ package visitor.typeAnalyzer;
 import ast.node.expression.*;
 import ast.node.expression.operators.BinaryOperator;
 import ast.node.expression.operators.UnaryOperator;
+import ast.node.expression.values.BooleanValue;
+import ast.node.expression.values.FloatValue;
 import ast.node.expression.values.IntValue;
 import ast.type.NoType;
 import ast.type.Type;
@@ -191,13 +193,13 @@ public class ExpressionTypeChecker extends Visitor<Type> {
     }
 
     @Override
-    public Type visit(FloatType value) {
+    public Type visit(FloatValue value) {
         this.seenNoneLvalue = true;
         return new FloatType();
     }
 
     @Override
-    public Type visit(BooleanType value) {
+    public Type visit(BooleanValue value) {
         this.seenNoneLvalue = true;
         return new BooleanType();
     }
