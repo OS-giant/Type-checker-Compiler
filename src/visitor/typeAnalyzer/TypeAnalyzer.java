@@ -156,7 +156,7 @@ public class TypeAnalyzer extends Visitor<Void> {
 
     @Override
     public Void visit(VarDecStmt varDecStmt) {
-        Type tl = varDecStmt.getIdentifier().accept(expressionTypeChecker);
+        Type tl = varDecStmt.getType();
         if (varDecStmt.getInitialExpression() != null) {
 
             Type tr = varDecStmt.getInitialExpression().accept(expressionTypeChecker);
