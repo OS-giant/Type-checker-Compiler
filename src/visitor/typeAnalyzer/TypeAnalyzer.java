@@ -166,12 +166,6 @@ public class TypeAnalyzer extends Visitor<Void> {
                 typeErrors.add(exception);
             }
         }
-        Expression lexpr = varDecStmt.getIdentifier();
-        if (!expressionTypeChecker.isLvalue(lexpr)) {
-            LeftSideNotLValue exception = new LeftSideNotLValue(varDecStmt.getLine());
-            typeErrors.add(exception);
-        }
-
         return null;
     }
 
