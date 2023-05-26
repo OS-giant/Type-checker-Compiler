@@ -157,16 +157,18 @@ public class TypeAnalyzer extends Visitor<Void> {
     @Override
     public Void visit(VarDecStmt varDecStmt) {
         Type tl = varDecStmt.getIdentifier().accept(expressionTypeChecker);
-        Type tr = varDecStmt.getInitialExpression().accept(expressionTypeChecker);
+        if (varDecStmt.getInitialExpression() != null) {
 
+            Type tr = varDecStmt.getInitialExpression().accept(expressionTypeChecker);
+            if (!expressionTypeChecker.sameType(tl, tr)) {
+                UnsupportedOperandType exception = new UnsupportedOperandType(
+                        varDecStmt.getLine(), BinaryOperator.gt.name());
+                typeErrors.add(exception);
+            }
+        }
         Expression lexpr = varDecStmt.getIdentifier();
         if (!expressionTypeChecker.isLvalue(lexpr)) {
             LeftSideNotLValue exception = new LeftSideNotLValue(varDecStmt.getLine());
-            typeErrors.add(exception);
-        }
-        if (!expressionTypeChecker.sameType(tl, tr)) {
-            UnsupportedOperandType exception = new UnsupportedOperandType(
-                    varDecStmt.getLine(), BinaryOperator.gt.name());
             typeErrors.add(exception);
         }
 
