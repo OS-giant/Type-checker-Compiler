@@ -58,7 +58,6 @@ public class ExpressionTypeChecker extends Visitor<Type> {
     }
 
     public boolean isLvalue(Expression expr) {
-        // TODO check the expr are lvalue or not
         boolean previousSeenNoneLvalue = this.seenNoneLvalue;
         boolean previousIsCatchErrorsActive = Node.isCatchErrorsActive;
         this.seenNoneLvalue = false;
