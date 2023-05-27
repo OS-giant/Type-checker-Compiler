@@ -14,11 +14,11 @@ import ast.node.statement.AssignStmt;
 import ast.node.statement.ForloopStmt;
 import ast.node.statement.ImplicationStmt;
 import ast.node.statement.VarDecStmt;
+import ast.node.statement.ArrayDecStmt;
 import ast.type.NoType;
 import ast.type.Type;
 import ast.type.primitiveType.BooleanType;
 import com.sun.jdi.VoidType;
-
 import compileError.CompileError;
 import compileError.Type.FunctionNotDeclared;
 import compileError.Type.LeftSideNotLValue;
@@ -167,6 +167,20 @@ public class TypeAnalyzer extends Visitor<Void> {
             typeErrors.add(exception);
         }
 
+        return null;
+    }
+
+    @Override
+    public Void visit(ArrayDecStmt arrayDecStmt) {
+        Type tl = arrayDecStmt.getType();
+        // if (arrayDecStmt.getInitialValues().size() != 0) {
+        // Type tr = arrayDecStmt.getInitialValues().accept(expressionTypeChecker);
+        // if (!expressionTypeChecker.sameType(tl, tr)) {
+        // UnsupportedOperandType exception = new UnsupportedOperandType(
+        // varDecStmt.getLine(), BinaryOperator.gt.name());
+        // typeErrors.add(exception);
+        // }
+        // }
         return null;
     }
 
