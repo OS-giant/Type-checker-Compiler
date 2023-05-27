@@ -40,6 +40,22 @@ public class ExpressionTypeChecker extends Visitor<Type> {
         this.typeErrors = typeErrors;
     }
 
+    public boolean is_boolean_operator(BinaryOperator op) {
+        if ((op.ordinal() == BinaryOperator.eq.ordinal()) ||
+                (op.ordinal() == BinaryOperator.neq.ordinal()) ||
+                (op.ordinal() == BinaryOperator.or.ordinal()) ||
+                (op.ordinal() == BinaryOperator.and.ordinal()) ||
+                (op.ordinal() == BinaryOperator.gt.ordinal()) ||
+                (op.ordinal() == BinaryOperator.gte.ordinal()) ||
+                (op.ordinal() == BinaryOperator.lt.ordinal()) ||
+                (op.ordinal() == BinaryOperator.lte.ordinal()) ||
+                (op.ordinal() == BinaryOperator.gt.ordinal()) ||
+                (op.ordinal() == BinaryOperator.gt.ordinal()))
+            return true;
+        return false;
+
+    }
+
     public boolean sameType(Type el1, Type el2) {
         // TODO check the two type are same or not
         if (el1 instanceof NoType || el2 instanceof NoType)
@@ -138,12 +154,24 @@ public class ExpressionTypeChecker extends Visitor<Type> {
         Type tl = binaryExpression.getLeft().accept(this);
         Type tr = binaryExpression.getRight().accept(this);
         BinaryOperator operator = binaryExpression.getBinaryOperator();
-
-        return new NoType();
+        if (tl != tr ||
+                ((tl instanceof NoType) && tr instanceof NoType)) {
+            UnsupportedOperandType exception = new UnsupportedOperandType(binaryExpression.getLine(), operator.name());
+            typeErrors.add(exception);
+            return new NoType();
+        }
+        if (is_boolean_operator(operator)) {
+            Type t = new BooleanType();
+            return t;
+        }
+        return tl;
     }
 
     @Override
     public Type visit(Identifier identifier) {
+        // identifier should be return value
+        // if identifier is var --> return val
+        // if func --> return return of func
         boolean is_func = identifier.iam_function_variable;
         if (is_func) {
             try {
@@ -153,7 +181,7 @@ public class ExpressionTypeChecker extends Visitor<Type> {
                 if (args.size() == 1)
                     if (args.get(0) instanceof NoType)
                         args = new ArrayList<>();
-                return new NoType();
+                return funcSym.getFuncDeclaration().getType();
 
             } catch (ItemNotFoundException exception2) {
                 FunctionNotDeclared exception = new FunctionNotDeclared(
