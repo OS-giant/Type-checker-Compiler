@@ -144,26 +144,33 @@ public class ExpressionTypeChecker extends Visitor<Type> {
 
     @Override
     public Type visit(Identifier identifier) {
-        try {
-            FunctionItem funcSym = (FunctionItem) SymbolTable.root.get(VariableItem.STARTKEY +
-                    identifier.getName());
-            ArrayList<Type> args = funcSym.argTypes;
-            if (args.size() == 1)
-                if (args.get(0) instanceof NoType)
-                    args = new ArrayList<>();
-            return new NoType();
-
-        } catch (ItemNotFoundException exception2) {
+        boolean is_func = identifier.iam_function_variable;
+        if (is_func) {
             try {
-                SymbolTable.top.get(VariableItem.STARTKEY + identifier.getName());
-                VariableItem varSym = (VariableItem) SymbolTable.top.get(VariableItem.STARTKEY +
+                FunctionItem funcSym = (FunctionItem) SymbolTable.root.get(FunctionItem.STARTKEY +
                         identifier.getName());
-                return varSym.getType();
-            } catch (ItemNotFoundException exception3) {
-                VarNotDeclared exception = new VarNotDeclared(identifier.getLine(), identifier.getName());
+                ArrayList<Type> args = funcSym.argTypes;
+                if (args.size() == 1)
+                    if (args.get(0) instanceof NoType)
+                        args = new ArrayList<>();
+                return new NoType();
+
+            } catch (ItemNotFoundException exception2) {
+                FunctionNotDeclared exception = new FunctionNotDeclared(
+                        identifier.getLine(), identifier.getName());
                 typeErrors.add(exception);
                 return new NoType();
             }
+        }
+        try {
+            SymbolTable.top.get(VariableItem.STARTKEY + identifier.getName());
+            VariableItem varSym = (VariableItem) SymbolTable.top.get(VariableItem.STARTKEY +
+                    identifier.getName());
+            return varSym.getType();
+        } catch (ItemNotFoundException exception3) {
+            VarNotDeclared exception = new VarNotDeclared(identifier.getLine(), identifier.getName());
+            typeErrors.add(exception);
+            return new NoType();
         }
     }
 
@@ -171,6 +178,7 @@ public class ExpressionTypeChecker extends Visitor<Type> {
     public Type visit(FunctionCall functionCall) {
         this.seenNoneLvalue = true;
         Integer count = typeErrors.size();
+        functionCall.getUFuncName().iam_function_variable = true;
         Type returnType = functionCall.getUFuncName().accept(this);
         if (typeErrors.size() - count == 1)// if identifier belong to
             // funcall remove last type_errors

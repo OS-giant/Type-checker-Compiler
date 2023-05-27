@@ -3,7 +3,8 @@ package ast.node.expression;
 import visitor.IVisitor;
 
 //Line -> IDENTIFIER
-public class Identifier extends Variable{
+public class Identifier extends Variable {
+    public boolean iam_function_variable = false;
 
     public Identifier(String name) {
         this.name = name;

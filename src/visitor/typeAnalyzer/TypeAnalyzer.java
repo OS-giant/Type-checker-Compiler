@@ -90,12 +90,16 @@ public class TypeAnalyzer extends Visitor<Void> {
 
     @Override
     public Void visit(ImplicationStmt implicationStmt) {
-        Type cond_Type = implicationStmt.getCondition().getType();
-        if (!(cond_Type instanceof BooleanType)) {
-            ConditionTypeNotBool exception = new ConditionTypeNotBool(implicationStmt.getLine());
-            typeErrors.add(exception);
-        }
+
+        Integer num_error = typeErrors.size();
         implicationStmt.getCondition().accept(expressionTypeChecker);
+        if (num_error == typeErrors.size()) {
+            Type cond_Type = implicationStmt.getCondition().getType();
+            if (!(cond_Type instanceof BooleanType)) {
+                ConditionTypeNotBool exception = new ConditionTypeNotBool(implicationStmt.getLine());
+                typeErrors.add(exception);
+            }
+        }
         return null;
     }
 
