@@ -145,7 +145,7 @@ public class ExpressionTypeChecker extends Visitor<Type> {
     @Override
     public Type visit(Identifier identifier) {
         try {
-            FunctionItem funcSym = (FunctionItem) SymbolTable.root.get(FunctionItem.STARTKEY +
+            FunctionItem funcSym = (FunctionItem) SymbolTable.root.get(VariableItem.STARTKEY +
                     identifier.getName());
             ArrayList<Type> args = funcSym.argTypes;
             if (args.size() == 1)
