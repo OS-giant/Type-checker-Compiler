@@ -18,6 +18,7 @@ import compileError.Type.UnsupportedOperandType;
 import compileError.Type.VarNotDeclared;
 import symbolTable.SymbolTable;
 import symbolTable.itemException.ItemNotFoundException;
+import symbolTable.symbolTableItems.ArrayItem;
 import symbolTable.symbolTableItems.FunctionItem;
 import symbolTable.symbolTableItems.VariableItem;
 import visitor.Visitor;
@@ -58,7 +59,7 @@ public class ExpressionTypeChecker extends Visitor<Type> {
 
     public boolean sameType(Type el1, Type el2) {
         // TODO check the two type are same or not
-        if (el1 instanceof NoType || el2 instanceof NoType)
+        if (el1 instanceof NoType && el2 instanceof NoType)
             return true;
 
         if (el1 instanceof BooleanType && el2 instanceof BooleanType)
@@ -173,7 +174,26 @@ public class ExpressionTypeChecker extends Visitor<Type> {
         return tl;
     }
 
+    public Type visit(ArrayAccess arrayAccess) {
+        try {
+            if (SymbolTable.top.get(VariableItem.STARTKEY + arrayAccess.getName()) instanceof VariableItem) {
+                VariableItem varSym = (VariableItem) SymbolTable.top.get(VariableItem.STARTKEY +
+                        arrayAccess.getName());
+                return varSym.getType();
+            } else {
+                ArrayItem varSym = (ArrayItem) SymbolTable.top.get(VariableItem.STARTKEY +
+                        arrayAccess.getName());
+                return varSym.getType();
+            }
+        } catch (ItemNotFoundException exception3) {
+            VarNotDeclared exception = new VarNotDeclared(arrayAccess.getLine(), arrayAccess.getName());
+            typeErrors.add(exception);
+            return new NoType();
+        }
+    }
+
     @Override
+
     public Type visit(Identifier identifier) {
         // identifier should be return value
         // if identifier is var --> return val
@@ -197,10 +217,15 @@ public class ExpressionTypeChecker extends Visitor<Type> {
             }
         }
         try {
-            SymbolTable.top.get(VariableItem.STARTKEY + identifier.getName());
-            VariableItem varSym = (VariableItem) SymbolTable.top.get(VariableItem.STARTKEY +
-                    identifier.getName());
-            return varSym.getType();
+            if (SymbolTable.top.get(VariableItem.STARTKEY + identifier.getName()) instanceof VariableItem) {
+                VariableItem varSym = (VariableItem) SymbolTable.top.get(VariableItem.STARTKEY +
+                        identifier.getName());
+                return varSym.getType();
+            } else {
+                ArrayItem varSym = (ArrayItem) SymbolTable.top.get(VariableItem.STARTKEY +
+                        identifier.getName());
+                return varSym.getType();
+            }
         } catch (ItemNotFoundException exception3) {
             VarNotDeclared exception = new VarNotDeclared(identifier.getLine(), identifier.getName());
             typeErrors.add(exception);

@@ -27,6 +27,7 @@ import compileError.Type.ConditionTypeNotBool;
 import symbolTable.SymbolTable;
 import symbolTable.itemException.ItemAlreadyExistsException;
 import symbolTable.itemException.ItemNotFoundException;
+import symbolTable.symbolTableItems.ArrayItem;
 import symbolTable.symbolTableItems.ForLoopItem;
 import symbolTable.symbolTableItems.FunctionItem;
 import symbolTable.symbolTableItems.MainItem;
@@ -93,9 +94,9 @@ public class TypeAnalyzer extends Visitor<Void> {
     public Void visit(ImplicationStmt implicationStmt) {
 
         Integer num_error = typeErrors.size();
-        implicationStmt.getCondition().accept(expressionTypeChecker);
+        Type cond_Type = implicationStmt.getCondition().accept(expressionTypeChecker);
         if (num_error == typeErrors.size()) {
-            Type cond_Type = implicationStmt.getCondition().getType();
+
             if (!(cond_Type instanceof BooleanType)) {
                 ConditionTypeNotBool exception = new ConditionTypeNotBool(implicationStmt.getLine());
                 typeErrors.add(exception);
@@ -155,16 +156,18 @@ public class TypeAnalyzer extends Visitor<Void> {
     @Override
     public Void visit(AssignStmt assignStmt) {
         Type tl = assignStmt.getLValue().accept(expressionTypeChecker);
+        int count_error = typeErrors.size();
         Type tr = assignStmt.getRValue().accept(expressionTypeChecker);
         Expression lexpr = assignStmt.getLValue();
         Expression rexpr = assignStmt.getRValue();
         if (!expressionTypeChecker.isLvalue(lexpr)) {
             LeftSideNotLValue exception = new LeftSideNotLValue(assignStmt.getLine());
             typeErrors.add(exception);
-        }
+        } else if (typeErrors.size() > count_error)
+            typeErrors.remove(typeErrors.size() - 1);
         if (!expressionTypeChecker.sameType(tl, tr)) {
             UnsupportedOperandType exception = new UnsupportedOperandType(
-                    assignStmt.getLine(), BinaryOperator.gt.name());
+                    assignStmt.getLine(), BinaryOperator.assign.name());
             typeErrors.add(exception);
         }
 
@@ -174,14 +177,12 @@ public class TypeAnalyzer extends Visitor<Void> {
     @Override
     public Void visit(ArrayDecStmt arrayDecStmt) {
         Type tl = arrayDecStmt.getType();
-        // if (arrayDecStmt.getInitialValues().size() != 0) {
-        // Type tr = arrayDecStmt.getInitialValues().accept(expressionTypeChecker);
-        // if (!expressionTypeChecker.sameType(tl, tr)) {
-        // UnsupportedOperandType exception = new UnsupportedOperandType(
-        // varDecStmt.getLine(), BinaryOperator.gt.name());
-        // typeErrors.add(exception);
-        // }
-        // }
+        ArrayItem arrayItem = new ArrayItem(arrayDecStmt.getIdentifier().getName(), tl);
+        try {
+            SymbolTable.top.put(arrayItem);
+        } catch (ItemAlreadyExistsException e) {
+            //
+        }
         return null;
     }
 
@@ -193,7 +194,7 @@ public class TypeAnalyzer extends Visitor<Void> {
             Type tr = varDecStmt.getInitialExpression().accept(expressionTypeChecker);
             if (!expressionTypeChecker.sameType(tl, tr)) {
                 UnsupportedOperandType exception = new UnsupportedOperandType(
-                        varDecStmt.getLine(), BinaryOperator.gt.name());
+                        varDecStmt.getLine(), BinaryOperator.assign.name());
                 typeErrors.add(exception);
             }
         }
