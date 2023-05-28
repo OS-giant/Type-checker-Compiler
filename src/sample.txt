@@ -1,25 +1,23 @@
-# -- def: (functions) --
-function randomFunc(): boolean {
-    int a;
-    IsRand(a);
-    ( ( b * c / d >= e == f ) && ![?IsRand(a)] ) => (boolean flag = false; print(a); return true;)
-    return false;
+# definition of functions
+function isDivisible(int a, int b): boolean {
+    (b == 0) => (return false;)
+    (a % b == 0) => (return true;)
+    (a % b != 0) => (return false;)
 }
 
-function b(): int {
-    IsLocal(b);
-    boolean[5] local_array = [-1, true, 666, -10, 0, 10.06];
-    for (i : local_array)
-    {
-        int a;
-        (randomFunc() + a == c % (d + 54) && true) => (return; a = a + 5;)
-        print([?IsLocal(a)]);
-        int c = local_array[a * 23 + 2] + 5;
-    }
-}
-
-# -- def: (main class) --
 main{
-    int a = 3;
-    isRend = 3;
+    int num1 = 50;
+    EvenNumber(num1);
+
+    ([?EvenNumber(num1)] && isDivisible(num1, 5)) => (DivisibleBy10(num1);)
+
+    int[2] int_array = [4, 5];
+    int num2 = 200;
+    boolean divisible = true;
+    for (a: int_array){
+        (!isDivisiblerf(num2, a)) => (divisible = false; return;)
+    }
+    (divisible == true) => (DivisibleBy20(num2);)
+
+
 }

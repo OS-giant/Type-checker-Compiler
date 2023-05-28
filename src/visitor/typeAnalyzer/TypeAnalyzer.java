@@ -74,6 +74,11 @@ public class TypeAnalyzer extends Visitor<Void> {
         curFunction = funcDeclaration;
         for (var arg : funcDeclaration.getArgs()) {
             arg.accept(this);
+            VariableItem variableItem = new VariableItem(arg.getIdentifier().getName(), arg.getType());
+            try {
+                SymbolTable.top.put(variableItem);
+            } catch (ItemAlreadyExistsException e) {
+            }
         }
         funcDeclaration.getIdentifier().accept(this);
         funcDeclaration.getName().accept(this);
