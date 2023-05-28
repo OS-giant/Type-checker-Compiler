@@ -30,6 +30,7 @@ import symbolTable.itemException.ItemNotFoundException;
 import symbolTable.symbolTableItems.ForLoopItem;
 import symbolTable.symbolTableItems.FunctionItem;
 import symbolTable.symbolTableItems.MainItem;
+import symbolTable.symbolTableItems.VariableItem;
 import visitor.Visitor;
 
 import java.util.ArrayList;
@@ -195,6 +196,13 @@ public class TypeAnalyzer extends Visitor<Void> {
                         varDecStmt.getLine(), BinaryOperator.gt.name());
                 typeErrors.add(exception);
             }
+        }
+        VariableItem variableItem = new VariableItem(varDecStmt.getIdentifier().getName(),
+                varDecStmt.getType());
+        try {
+            SymbolTable.top.put(variableItem);
+        } catch (ItemAlreadyExistsException e) {
+            //
         }
         return null;
     }
