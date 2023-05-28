@@ -213,18 +213,4 @@ public class TypeAnalyzer extends Visitor<Void> {
         return null;
     }
 
-    @Override
-    public Void visit(FunctionCall functionCall) {
-        expressionTypeChecker.setIsInFunctionCallStmt(true);
-        try {
-            SymbolTable.root.get(FunctionItem.STARTKEY + functionCall.getUFuncName().getName());
-        } catch (ItemNotFoundException e) {
-
-        }
-
-        expressionTypeChecker.setIsInFunctionCallStmt(false);
-
-        return null;
-    }
-
 }

@@ -249,6 +249,9 @@ public class ExpressionTypeChecker extends Visitor<Type> {
             typeErrors.add(funNotDec);
         }
 
+        for (var arg : functionCall.getArgs()) {
+            arg.accept(this);
+        }
         return returnType;
     }
 
