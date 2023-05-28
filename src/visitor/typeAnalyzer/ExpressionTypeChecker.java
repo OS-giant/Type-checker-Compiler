@@ -88,8 +88,11 @@ public class ExpressionTypeChecker extends Visitor<Type> {
 
     @Override
     public Type visit(QueryExpression queryExpression) {
+
         if (queryExpression.getVar() == null)
             return new NoType();
+        else
+            queryExpression.getVar().accept(this);
         return new BooleanType();
     }
 
@@ -162,7 +165,8 @@ public class ExpressionTypeChecker extends Visitor<Type> {
         Type tl = binaryExpression.getLeft().accept(this);
         Type tr = binaryExpression.getRight().accept(this);
         BinaryOperator operator = binaryExpression.getBinaryOperator();
-        if (((tl instanceof NoType) && tr instanceof NoType)) {
+        if (((tl instanceof NoType) || tr instanceof NoType) ||
+                !sameType(tl, tr)) {
             UnsupportedOperandType exception = new UnsupportedOperandType(binaryExpression.getLine(), operator.name());
             typeErrors.add(exception);
             return new NoType();

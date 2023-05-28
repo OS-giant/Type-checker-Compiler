@@ -1,21 +1,32 @@
-main{ # main body =>
-    int num_1;
-    float num_2 = -0.012;
-    boolean flag = (5 == 6);
-    int[2] aA_2;
-    num2 = num1 * 5 + (+6) - 10.00 / a[2];
-    Predicate1(flag);
-    (true) => ( print(num_1); (flag >= 5 * num2 % aA_2[num_1]) => (num_2 = num1;) )
-    int[4] a2 = [2, 4, 6, 8];
-    int num = a2[1] +a2[4];
-    (true || false && 8 >= -2 || 5 == num1 + 3) => (a = 5; IsPredicate(b);)
+# definition of functions
+function isDivisible(int a, int b): boolean {
+    (b == 0) => (return false;)
+    (a % b == 0) => (return true;)
+    (a % b != 0) => (return false;)
+    for (a: int_array){
+            (!isDivisiblerf(num2, a)) => (divisible = false; return;
+            a = 10;)
+        }
+        for(a : cded)
+        {
+        a = true;
+        }
 
-    for (i : aA_2)
-    {
-        (a == b && isDoubled(a)) => (flag = true; print(flag);)
-        print([?IsPredicate(a2[5])]);
-    }
-    EventNum(i);
-    boolean flag = isPossible(a);
-    print([EventNum(?)]);
+    a = a+10;
+}
+
+main{
+    int num1 = 50;
+    EvenNumber(num1);
+
+    ([?EvenNumber(num1)] && isDivisible(num1, 5)) => (DivisibleBy10(num1);)
+
+    int[2] int_array = [4, 5];
+    boolean[2] cded;
+    int num2 = 200;
+    boolean divisible = true;
+
+    (divisible == true) => (DivisibleBy20(num2);)
+num2 = 10000;
+
 }

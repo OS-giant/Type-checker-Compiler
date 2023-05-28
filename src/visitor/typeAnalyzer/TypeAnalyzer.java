@@ -57,41 +57,20 @@ public class TypeAnalyzer extends Visitor<Void> {
 
     @Override
     public Void visit(FuncDeclaration funcDeclaration) {
-        FunctionItem functionItem = new FunctionItem(funcDeclaration);
-        hasReturn = false;
-        Type type = funcDeclaration.getType();
-
         try {
-            functionItem = (FunctionItem) SymbolTable.root
-                    .get(FunctionItem.STARTKEY + funcDeclaration.getName().getName());
-            SymbolTable.push((functionItem.getFunctionSymbolTable()));
-
+            FunctionItem functionItem = (FunctionItem) SymbolTable.root.get(
+                    FunctionItem.STARTKEY + funcDeclaration.getName().getName());
+            SymbolTable.push(functionItem.getFunctionSymbolTable());
         } catch (ItemNotFoundException e) {
-            // unreachable
+            // TODO: handle exception
         }
-        SymbolTable new_symbol = new SymbolTable();
-        SymbolTable.push(new_symbol);
-        curFunction = funcDeclaration;
         for (var arg : funcDeclaration.getArgs()) {
             arg.accept(this);
-            VariableItem variableItem = new VariableItem(arg.getIdentifier().getName(), arg.getType());
-            try {
-                SymbolTable.top.put(variableItem);
-            } catch (ItemAlreadyExistsException e) {
-            }
         }
-        funcDeclaration.getIdentifier().accept(this);
-        funcDeclaration.getName().accept(this);
-        ;
-
         for (var stmt : funcDeclaration.getStatements()) {
             stmt.accept(this);
         }
-
         SymbolTable.pop();
-
-        functionItem.setFunctionSymbolTable(new_symbol);
-
         return null;
     }
 
@@ -100,13 +79,15 @@ public class TypeAnalyzer extends Visitor<Void> {
 
         Integer num_error = typeErrors.size();
         Type cond_Type = implicationStmt.getCondition().accept(expressionTypeChecker);
-        if (num_error == typeErrors.size()) {
+        if (num_error != typeErrors.size()) {
 
             if (!(cond_Type instanceof BooleanType)) {
                 ConditionTypeNotBool exception = new ConditionTypeNotBool(implicationStmt.getLine());
                 typeErrors.add(exception);
             }
         }
+        for (var s : implicationStmt.getStatements())
+            s.accept(this);
         return null;
     }
 
@@ -142,38 +123,38 @@ public class TypeAnalyzer extends Visitor<Void> {
     @Override
     public Void visit(ForloopStmt forloopStmt) {
         Identifier array_name = forloopStmt.getArrayName();
+        Type Array_item = forloopStmt.getArrayName().accept(expressionTypeChecker);
         array_name.accept(expressionTypeChecker);
 
+        ForLoopItem forLoopItem = new ForLoopItem(forloopStmt);
+
+        SymbolTable symbolTable_new = SymbolTable.top;
+        SymbolTable.push(symbolTable_new);
+        VariableItem variableItem = new VariableItem(forloopStmt.getIterator().getName(),
+                Array_item);
         try {
-            ForLoopItem forLoopItem = (ForLoopItem) SymbolTable.root
-                    .get(FunctionItem.STARTKEY + forloopStmt.toString());
-            SymbolTable.push((forLoopItem.getForLoopSymbolTable()));
-        } catch (ItemNotFoundException e) {
+            SymbolTable.top.put(variableItem);
+        } catch (ItemAlreadyExistsException e) {
 
         }
+
         for (var stmt : forloopStmt.getStatements())
             stmt.accept(this);
         SymbolTable.pop();
-
+        SymbolTable.pop();
+        SymbolTable.push(SymbolTable.top);
+        // تاپ درست وقتی به دست می اید که 2 بار پاپ شود
+        // وگرنه تاپی که توسط پاپ ایجاد میشود ، عنصر حذف شده است
         return null;
     }
 
     @Override
     public Void visit(AssignStmt assignStmt) {
         Type tl = assignStmt.getLValue().accept(expressionTypeChecker);
-        int count_error = typeErrors.size();
         Type tr = assignStmt.getRValue().accept(expressionTypeChecker);
-        Expression lexpr = assignStmt.getLValue();
-        Expression rexpr = assignStmt.getRValue();
-        if (!expressionTypeChecker.isLvalue(lexpr)) {
-            LeftSideNotLValue exception = new LeftSideNotLValue(assignStmt.getLine());
-            typeErrors.add(exception);
-        } else if (typeErrors.size() > count_error)
-            typeErrors.remove(typeErrors.size() - 1);
+
         if (!expressionTypeChecker.sameType(tl, tr)) {
-            UnsupportedOperandType exception = new UnsupportedOperandType(
-                    assignStmt.getLine(), BinaryOperator.assign.name());
-            typeErrors.add(exception);
+            typeErrors.add(new UnsupportedOperandType(assignStmt.getLine(), BinaryOperator.assign.name()));
         }
 
         return null;
