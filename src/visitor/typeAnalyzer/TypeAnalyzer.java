@@ -13,6 +13,7 @@ import ast.node.expression.operators.BinaryOperator;
 import ast.node.statement.AssignStmt;
 import ast.node.statement.ForloopStmt;
 import ast.node.statement.ImplicationStmt;
+import ast.node.statement.ReturnStmt;
 import ast.node.statement.VarDecStmt;
 import ast.node.statement.ArrayDecStmt;
 import ast.type.NoType;
@@ -71,6 +72,13 @@ public class TypeAnalyzer extends Visitor<Void> {
             stmt.accept(this);
         }
         SymbolTable.pop();
+        return null;
+    }
+
+    @Override
+    public Void visit(ReturnStmt returnStmt) {
+        if (returnStmt.getExpression() != null)
+            returnStmt.getExpression().accept(expressionTypeChecker);
         return null;
     }
 
