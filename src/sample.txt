@@ -1,3 +1,35 @@
+# -- def: (functions) --
+function randomFunc(int b, int c, boolean d): boolean {
+    int a;
+    IsRand(a);
+    ( ( b * c / d >= e == f ) && ![?IsRand(a)] ) => (boolean flag = false; print(a); return true;)
+    return false;
+}
+
+function b(): int {
+    IsLocal(b);
+    boolean[5] local_array = [-1, true, 666, -10, 0, 10.06];
+    for (i : local_array)
+    {
+        int a;
+        (randomFunc() + a == c % (d + 54) && true) => (return; a = a + 5;)
+        print([?IsLocal(a)]);
+        int c = local_array[a * 23 + 2] + 5;
+        int[4] local_array;
+        for(i : local_array)
+        {
+            int a_new = false;
+            a_new = i;
+            for(p : local_array)
+            {
+                (randomFunc() == true) => (a_new = true;)
+            }
+            a_new = 10;
+        }
+        a_new = 5;
+        a_new = true;
+    }
+}
 main{ # main body =>
     int num_1;
     float num_2 = -0.012;

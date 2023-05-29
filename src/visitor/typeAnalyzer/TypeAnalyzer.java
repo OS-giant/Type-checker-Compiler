@@ -57,13 +57,12 @@ public class TypeAnalyzer extends Visitor<Void> {
 
     @Override
     public Void visit(FuncDeclaration funcDeclaration) {
-        try {
-            FunctionItem functionItem = (FunctionItem) SymbolTable.root.get(
-                    FunctionItem.STARTKEY + funcDeclaration.getName().getName());
-            SymbolTable.push(functionItem.getFunctionSymbolTable());
-        } catch (ItemNotFoundException e) {
-            // TODO: handle exception
-        }
+
+        FunctionItem functionItem = new FunctionItem(funcDeclaration);
+        SymbolTable symbolTable = new SymbolTable(null, funcDeclaration.getName().getName());
+        functionItem.setFunctionSymbolTable(symbolTable);
+        SymbolTable.push(functionItem.getFunctionSymbolTable());
+
         for (var arg : funcDeclaration.getArgs()) {
             arg.accept(this);
         }
@@ -127,9 +126,9 @@ public class TypeAnalyzer extends Visitor<Void> {
         array_name.accept(expressionTypeChecker);
 
         ForLoopItem forLoopItem = new ForLoopItem(forloopStmt);
-
-        SymbolTable symbolTable_new = SymbolTable.top;
-        SymbolTable.push(symbolTable_new);
+        SymbolTable symbolTable_new = new SymbolTable(SymbolTable.top, "For_In_" + SymbolTable.top.name);
+        forLoopItem.setFunctionSymbolTable(symbolTable_new);
+        SymbolTable.push(forLoopItem.getForLoopSymbolTable());
         VariableItem variableItem = new VariableItem(forloopStmt.getIterator().getName(),
                 Array_item);
         try {

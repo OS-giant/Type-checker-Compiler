@@ -13,9 +13,9 @@ public class SymbolTable {
     private static Stack<SymbolTable> stack = new Stack<SymbolTable>();
 
     public static void push(SymbolTable symbolTable) {
-        if (top != null)
-            stack.push(top);
+
         top = symbolTable;
+        stack.push(top);
     }
 
     public static void pop() {

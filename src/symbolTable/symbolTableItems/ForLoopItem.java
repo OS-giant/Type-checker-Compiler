@@ -8,7 +8,7 @@ import symbolTable.SymbolTable;
 
 import java.util.ArrayList;
 
-public class ForLoopItem extends SymbolTableItem{
+public class ForLoopItem extends SymbolTableItem {
     protected SymbolTable ForLoopSymbolTable;
     protected ForloopStmt forloopStmt;
     public static final String STARTKEY = "ForLoop_";
@@ -17,14 +17,16 @@ public class ForLoopItem extends SymbolTableItem{
         this.name = name;
     }
 
-    public ForLoopItem(ForloopStmt forloopStmt)
-    {
+    public void setFunctionSymbolTable(SymbolTable symbolTable) {
+        this.ForLoopSymbolTable = symbolTable;
+    }
+
+    public ForLoopItem(ForloopStmt forloopStmt) {
         this.name = forloopStmt.toString();
         this.forloopStmt = forloopStmt;
     }
 
-    public SymbolTable getForLoopSymbolTable()
-    {
+    public SymbolTable getForLoopSymbolTable() {
         return this.ForLoopSymbolTable;
     }
 
