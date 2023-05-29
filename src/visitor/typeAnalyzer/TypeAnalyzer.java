@@ -18,6 +18,9 @@ import ast.node.statement.ReturnStmt;
 import ast.node.statement.VarDecStmt;
 import ast.node.statement.ArrayDecStmt;
 import ast.type.NoType;
+import ast.type.primitiveType.BooleanType;
+import ast.type.primitiveType.FloatType;
+import ast.type.primitiveType.IntType;
 import ast.type.Type;
 import ast.type.primitiveType.BooleanType;
 import com.sun.jdi.VoidType;
@@ -38,6 +41,8 @@ import visitor.Visitor;
 import ast.node.declaration.ArgDeclaration;
 
 import java.util.ArrayList;
+
+import org.antlr.v4.runtime.atn.SemanticContext.Operator;
 
 public class TypeAnalyzer extends Visitor<Void> {
     public ArrayList<CompileError> typeErrors = new ArrayList<>();
@@ -205,6 +210,18 @@ public class TypeAnalyzer extends Visitor<Void> {
         } catch (ItemAlreadyExistsException e) {
             //
         }
+        boolean is_not_valid_value = false;
+        for (Expression index : arrayDecStmt.getInitialValues()) {
+            Type type = index.accept(expressionTypeChecker);
+            if (!is_not_valid_value && !sameType(type, tl)) {
+                UnsupportedOperandType unsupportedOperandType = new UnsupportedOperandType(arrayDecStmt.getLine(),
+                        BinaryOperator.assign.name());
+                typeErrors.add(unsupportedOperandType);
+                is_not_valid_value = true;
+            } else if (!is_not_valid_value && type instanceof NoType) {
+
+            }
+        }
         return null;
     }
 
@@ -229,6 +246,22 @@ public class TypeAnalyzer extends Visitor<Void> {
             //
         }
         return null;
+    }
+
+    public boolean sameType(Type el1, Type el2) {
+        if (el1 instanceof NoType && el2 instanceof NoType)
+            return true;
+
+        if (el1 instanceof BooleanType && el2 instanceof BooleanType)
+            return true;
+
+        if (el1 instanceof IntType && el2 instanceof IntType)
+            return true;
+
+        if (el1 instanceof FloatType && el2 instanceof FloatType)
+            return true;
+
+        return false;
     }
 
 }
