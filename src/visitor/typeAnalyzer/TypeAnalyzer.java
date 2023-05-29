@@ -33,6 +33,7 @@ import symbolTable.symbolTableItems.FunctionItem;
 import symbolTable.symbolTableItems.MainItem;
 import symbolTable.symbolTableItems.VariableItem;
 import visitor.Visitor;
+import ast.node.declaration.ArgDeclaration;
 
 import java.util.ArrayList;
 
@@ -117,6 +118,20 @@ public class TypeAnalyzer extends Visitor<Void> {
         SymbolTable.pop();
         functionItem.setFunctionDeclaration(functionDeclaration);
         return null;
+    }
+
+    @Override
+    public Void visit(ArgDeclaration argDeclaration) {
+        VarDecStmt varDecStmt = new VarDecStmt(argDeclaration.getIdentifier(), argDeclaration.getType());
+        VariableItem variableItem = new VariableItem(varDecStmt);
+        try {
+            SymbolTable.top.put(variableItem);
+        } catch (ItemAlreadyExistsException e) {
+            // not this phase
+        }
+
+        return null;
+
     }
 
     @Override
