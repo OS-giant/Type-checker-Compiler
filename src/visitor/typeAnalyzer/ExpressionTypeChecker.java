@@ -102,61 +102,18 @@ public class ExpressionTypeChecker extends Visitor<Type> {
         Type expType = uExpr.accept(this);
         UnaryOperator operator = unaryExpression.getUnaryOperator();
 
-        // TODO check errors and return the type
-        if (operator.equals(UnaryOperator.minus)) {
-            if (expType instanceof IntType)
-                return expType;
-
-            if (expType instanceof NoType)
-                return new NoType();
-            else {
-                UnsupportedOperandType exception = new UnsupportedOperandType(uExpr.getLine(), operator.name());
-                typeErrors.add(exception);
-                return new NoType();
-            }
-
-        } else if (operator.equals(UnaryOperator.plus)) {
-            if (expType instanceof IntType)
-                return expType;
-
-            if (expType instanceof NoType)
-                return new NoType();
-            else {
-                UnsupportedOperandType exception = new UnsupportedOperandType(uExpr.getLine(), operator.name());
-                typeErrors.add(exception);
-                return new NoType();
-            }
-        }
-
-        else if (operator.equals(UnaryOperator.not)) {
-            if (expType instanceof BooleanType)
-                return expType;
-
-            if (!(expType instanceof NoType)) {
-                return new NoType();
-            } else {
-                UnsupportedOperandType exception = new UnsupportedOperandType(uExpr.getLine(), operator.name());
-                typeErrors.add(exception);
-            }
-
+        if ((expType instanceof FloatType) && !operator.equals(UnaryOperator.not)) {
+            return new FloatType();
+        } else if ((expType instanceof BooleanType) && operator.equals(UnaryOperator.not)) {
+            return new BooleanType();
+        } else if ((expType instanceof IntType) && !operator.equals(UnaryOperator.not)) {
+            return new IntType();
+        } else if (expType instanceof NoType) { // don't added ti error of operands
+            return new NoType();
         } else {
-            boolean isOperandLValue = this.isLvalue(unaryExpression.getOperand());
-            if (expType instanceof NoType)
-                return new NoType();
-
-            if (expType instanceof IntType) {
-                if (isOperandLValue)
-                    return expType;
-
-                return new NoType();
-            }
-
-            UnsupportedOperandType exception = new UnsupportedOperandType(uExpr.getLine(), operator.name());
-            typeErrors.add(exception);
+            typeErrors.add(new UnsupportedOperandType(unaryExpression.getLine(), operator.name()));
             return new NoType();
         }
-
-        return new NoType();
     }
 
     @Override
