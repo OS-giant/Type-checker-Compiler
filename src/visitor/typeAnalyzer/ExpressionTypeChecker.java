@@ -58,7 +58,6 @@ public class ExpressionTypeChecker extends Visitor<Type> {
     }
 
     public boolean sameType(Type el1, Type el2) {
-        // TODO check the two type are same or not
         if (el1 instanceof NoType && el2 instanceof NoType)
             return true;
 
@@ -165,17 +164,19 @@ public class ExpressionTypeChecker extends Visitor<Type> {
         Type tl = binaryExpression.getLeft().accept(this);
         Type tr = binaryExpression.getRight().accept(this);
         BinaryOperator operator = binaryExpression.getBinaryOperator();
-        if (((tl instanceof NoType) || tr instanceof NoType) ||
+        if ((!(tl instanceof NoType) && !(tr instanceof NoType)) &&
                 !sameType(tl, tr)) {
             UnsupportedOperandType exception = new UnsupportedOperandType(binaryExpression.getLine(), operator.name());
             typeErrors.add(exception);
             return new NoType();
         }
-        if (is_boolean_operator(operator)) {
+        if ((tl instanceof NoType) || (tr instanceof NoType))
+            return new NoType();
+        if (is_boolean_operator(operator) && sameType(tl, tr)) {
             Type t = new BooleanType();
             return t;
         }
-        return tl;
+        return new NoType();
     }
 
     public Type visit(ArrayAccess arrayAccess) {

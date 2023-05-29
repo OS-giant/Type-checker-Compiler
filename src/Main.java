@@ -11,8 +11,8 @@ import visitor.typeAnalyzer.TypeAnalyzer;
 
 public class Main {
     public static void main(String[] args) throws java.io.IOException {
-
-        CharStream reader = CharStreams.fromFileName(args[0]);
+        String name = "C:\\Users\\ASUS\\Desktop\\debug_comp\\Type-checker-Compiler\\src\\sample.txt";
+        CharStream reader = CharStreams.fromFileName(name);
         LogicPLLexer lexer = new LogicPLLexer(reader);
         CommonTokenStream tokens = new CommonTokenStream(lexer);
         LogicPLParser parser = new LogicPLParser(tokens);

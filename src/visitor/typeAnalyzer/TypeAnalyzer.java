@@ -80,11 +80,11 @@ public class TypeAnalyzer extends Visitor<Void> {
         Integer num_error = typeErrors.size();
         Type cond_Type = implicationStmt.getCondition().accept(expressionTypeChecker);
         if (num_error != typeErrors.size()) {
-
-            if (!(cond_Type instanceof BooleanType)) {
-                ConditionTypeNotBool exception = new ConditionTypeNotBool(implicationStmt.getLine());
-                typeErrors.add(exception);
-            }
+            if (!(cond_Type instanceof NoType))
+                if (!(cond_Type instanceof BooleanType)) {
+                    ConditionTypeNotBool exception = new ConditionTypeNotBool(implicationStmt.getLine());
+                    typeErrors.add(exception);
+                }
         }
         for (var s : implicationStmt.getStatements())
             s.accept(this);
@@ -153,7 +153,8 @@ public class TypeAnalyzer extends Visitor<Void> {
         Type tl = assignStmt.getLValue().accept(expressionTypeChecker);
         Type tr = assignStmt.getRValue().accept(expressionTypeChecker);
 
-        if (!expressionTypeChecker.sameType(tl, tr)) {
+        if (!expressionTypeChecker.sameType(tl, tr) && !(tl instanceof NoType)
+                && !(tr instanceof NoType)) {
             typeErrors.add(new UnsupportedOperandType(assignStmt.getLine(), BinaryOperator.assign.name()));
         }
 
@@ -178,7 +179,8 @@ public class TypeAnalyzer extends Visitor<Void> {
         if (varDecStmt.getInitialExpression() != null) {
 
             Type tr = varDecStmt.getInitialExpression().accept(expressionTypeChecker);
-            if (!expressionTypeChecker.sameType(tl, tr)) {
+            if (!expressionTypeChecker.sameType(tl, tr) && !(tl instanceof NoType)
+                    && !(tr instanceof NoType)) {
                 UnsupportedOperandType exception = new UnsupportedOperandType(
                         varDecStmt.getLine(), BinaryOperator.assign.name());
                 typeErrors.add(exception);
