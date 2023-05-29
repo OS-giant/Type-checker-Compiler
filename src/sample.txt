@@ -15,6 +15,7 @@ function b(): int {
         (randomFunc() + a == c % (d + 54) && true) => (return; a = a + 5;)
         print([?IsLocal(a)]);
         int c = local_array[a * 23 + 2] + 5;
+        boolean[1] aa;
         int[4] local_array;
         for(i : local_array)
         {
@@ -23,7 +24,12 @@ function b(): int {
             for(p : local_array)
             {
                 (randomFunc() == true) => (a_new = true;)
+                t = 10;
+                (a_new == aa[1]) =>(int t; boolean j = t; (t == true && j*4 >= 2) => (int jj = 2;) a_new = jj;)
+                a_new = j;
+                t = 20;
             }
+            a_new = t * j;
             a_new = 10;
         }
         a_new = 5;

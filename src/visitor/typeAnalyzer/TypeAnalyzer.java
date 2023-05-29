@@ -77,6 +77,8 @@ public class TypeAnalyzer extends Visitor<Void> {
     @Override
     public Void visit(ImplicationStmt implicationStmt) {
 
+        SymbolTable.push(new SymbolTable(SymbolTable.top, "Implication_in_" + SymbolTable.top.name));
+
         Integer num_error = typeErrors.size();
         Type cond_Type = implicationStmt.getCondition().accept(expressionTypeChecker);
         if (num_error != typeErrors.size()) {
@@ -88,6 +90,9 @@ public class TypeAnalyzer extends Visitor<Void> {
         }
         for (var s : implicationStmt.getStatements())
             s.accept(this);
+        SymbolTable.pop();
+        SymbolTable.pop();
+        SymbolTable.push(SymbolTable.top);
         return null;
     }
 
